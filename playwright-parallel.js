@@ -1,5 +1,5 @@
 const { chromium } = require('playwright')
-const {expect} = require("expect");
+const {expect} = require('@playwright/test');
 const cp = require('child_process');
 const playwrightClientVersion = cp.execSync('npx playwright --version').toString().trim().split(' ')[1];
 
@@ -12,16 +12,20 @@ const parallelTests = async (capability) => {
 
   const page = await browser.newPage()
 
-  await page.goto("https://duckduckgo.com");
+  await page.goto('https://downloads.focusrite.com/focusrite');
+  await page.getByRole('button', { name: 'Allow all cookies' }).click();
 
-  let element = await page.locator("[name=\"q\"]");
-  await element.click();
-  await element.type("LambdaTest");
-  await element.press("Enter");
-  const title = await page.title()
+
+  // Click the get started link.
+  await page.getByRole('link', { name: 'Get Novation downloads' }).click();
+  await page.getByRole('button', { name: 'Allow all cookies' }).click();
+  
+
+
+  const title = await page.title();
 
   try {
-    expect(title).toEqual('LambdaTest at DuckDuckGo')
+    expect(title).toContain('Novation Downloads')
     // Mark the test as completed or failed
     await page.evaluate(_ => {}, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'passed', remark: 'Title matched' } })}`)
     await teardown(page, browser)
@@ -45,7 +49,7 @@ const capabilities = [
     'browserVersion': 'latest',
     'LT:Options': {
       'platform': 'Windows 10',
-      'build': 'Playwright With Parallel Build',
+      'build': 'Playwright With Parallel Build Focusrite',
       'name': 'Playwright Sample Test on Windows 10 - Chrome',
       'user': process.env.LT_USERNAME,
       'accessKey': process.env.LT_ACCESS_KEY,
@@ -60,7 +64,7 @@ const capabilities = [
     'browserVersion': 'latest',
     'LT:Options': {
       'platform': 'MacOS Ventura',
-      'build': 'Playwright With Parallel Build',
+      'build': 'Playwright With Parallel Build Focusrite',
       'name': 'Playwright Sample Test on Windows 8 - MicrosoftEdge',
       'user': process.env.LT_USERNAME,
       'accessKey': process.env.LT_ACCESS_KEY,
@@ -75,7 +79,7 @@ const capabilities = [
     'browserVersion': 'latest',
     'LT:Options': {
       'platform': 'MacOS Big sur',
-      'build': 'Playwright With Parallel Build',
+      'build': 'Playwright With Parallel Build Focusrite',
       'name': 'Playwright Sample Test on MacOS Big sur - Chrome',
       'user': process.env.LT_USERNAME,
       'accessKey': process.env.LT_ACCESS_KEY,

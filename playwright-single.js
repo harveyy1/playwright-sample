@@ -26,13 +26,21 @@ const { expect } = require('@playwright/test');
   await page.goto('https://downloads.focusrite.com/focusrite');
 
   await page.getByRole('button', { name: 'Allow all cookies' }).click();
-  
+
 
   // Click the get started link.
   await page.getByRole('link', { name: 'Get Novation downloads' }).click();
+  await page.getByRole('button', { name: 'Allow all cookies' }).click();
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Novation Downloads' })).toBeVisible();
+  const title = await page.title();
+
+  try {
+    expect(title).toContain('Novation Downloads')
+    // Mark the test as completed or failed
+    await page.evaluate(_ => {}, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'passed', remark: 'Title matched' } })}`)
+  } catch {
+    await page.evaluate(_ => {}, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'failed', remark: 'Title not matched' } })}`)
+  } 
 
   await browser.close()
 })()
